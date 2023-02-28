@@ -407,5 +407,10 @@ namespace GoatProblem
         {
             return rectangle.Intersects(sprite.AccessRectangle);
         }
+
+        public static float Hypot(float x, float y)
+        {
+            return MathF.Sqrt(MathF.Pow(x, 2) + MathF.Pow(y, 2));
+        }
     }
 }

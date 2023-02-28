@@ -51,7 +51,7 @@ namespace GoatProblem
         /// <summary>
         /// Uppdaterar input grejerna.
         /// </summary>
-        public static KeyboardState GetState(GameWindow Window, RenderTarget2D renderTarget)
+        public static KeyboardState GetState(GameWindow Window)
         {
             myPreviousKeyState = myCurrentKeyState;
             myCurrentKeyState = Keyboard.GetState();
@@ -84,7 +84,7 @@ namespace GoatProblem
 
             AccessPreviousNormalizedDirectional = AccessCurrentNormalizedDirectional;
             AccessCurrentNormalizedDirectional = AdvancedMath.ClampMagnitude(AccessDirectional, 1);
-            mousePosWithOffset = MousePos(Window, renderTarget);
+            //mousePosWithOffset = MousePos(Window, renderTarget);
 
             myPreviousscrollWheelValue = myCurrentscrollWheelValue;
             myCurrentscrollWheelValue = myCurrentMouseState.ScrollWheelValue;

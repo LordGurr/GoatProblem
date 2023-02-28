@@ -237,17 +237,18 @@ namespace GoatProblem
         /// </summary>
         public static Texture2D CreateCircleTex(int aRadius, GraphicsDevice graphicsDevice)
         {
-            Texture2D texture = new Texture2D(graphicsDevice, aRadius, aRadius);
-            Color[] colorData = new Color[aRadius * aRadius];
+            int aDiameter = aRadius * 2;
+            Texture2D texture = new Texture2D(graphicsDevice, aDiameter, aDiameter);
+            Color[] colorData = new Color[aDiameter * aDiameter];
 
-            float diam = aRadius / 2f;
+            float diam = aDiameter / 2f;
             float diamsq = diam * diam;
 
-            for (int x = 0; x < aRadius; x++)
+            for (int x = 0; x < aDiameter; x++)
             {
-                for (int y = 0; y < aRadius; y++)
+                for (int y = 0; y < aDiameter; y++)
                 {
-                    int index = x * aRadius + y;
+                    int index = x * aDiameter + y;
                     Vector2 pos = new Vector2(x - diam, y - diam);
                     if (pos.LengthSquared() <= diamsq)
                     {
@@ -262,6 +263,71 @@ namespace GoatProblem
 
             texture.SetData(colorData);
             return texture;
+        }
+
+        public static Texture2D CreateCircleTex(int aRadius, GraphicsDevice graphicsDevice, int width)
+        {
+            int aDiameter = aRadius * 2;
+            Texture2D texture = new Texture2D(graphicsDevice, aDiameter, aDiameter);
+            Color[] colorData = new Color[aDiameter * aDiameter];
+
+            float diam = aDiameter / 2f;
+            float diamsq = diam * diam;
+            float borderwidth = diam - width;
+            borderwidth = borderwidth * borderwidth;
+
+            for (int x = 0; x < aDiameter; x++)
+            {
+                for (int y = 0; y < aDiameter; y++)
+                {
+                    int index = x * aDiameter + y;
+                    Vector2 pos = new Vector2(x - diam, y - diam);
+                    if (pos.LengthSquared() <= diamsq && pos.LengthSquared() >= borderwidth)
+                    {
+                        colorData[index] = Color.White;
+                    }
+                    else
+                    {
+                        colorData[index] = Color.Transparent;
+                    }
+                }
+            }
+
+            texture.SetData(colorData);
+            return texture;
+        }
+
+        public static void DrawGrid(int gridSize, int lineWidth, SpriteBatch _spriteBatch, Camera camera, GameWindow window, Texture2D square)
+        {
+            //Horiziontal lines
+            int lines = 0;
+            for (int i = AdvancedMath.GetNearestMultiple((int)Math.Round(camera.ScreenToWorldSpace(new Vector2()).Y), gridSize); i < AdvancedMath.GetNearestMultiple((int)Math.Round(camera.ScreenToWorldSpace(new Vector2(0, window.ClientBounds.Height)).Y), gridSize) + gridSize; i += gridSize)
+            {
+                int myLineWidth = i / gridSize % 5 == 0 ? i / gridSize % 25 == 0 ? lineWidth * 2 : lineWidth : lineWidth / 2;
+                if ((float)myLineWidth * (float)camera.AccessZoom > 0.9f)
+                {
+                    DrawLine(_spriteBatch, new Vector2((int)Math.Round(camera.ScreenToWorldSpace(new Vector2(-10, 0)).X), (i)), new Vector2((int)Math.Round(camera.ScreenToWorldSpace(new Vector2(window.ClientBounds.Width + 10, 0)).X), (i)), myLineWidth, square, Color.White);
+                    lines++;
+                }
+                else
+                {
+                }
+            }
+            // Vertical lines
+            int vertical = 0;
+            for (int i = AdvancedMath.GetNearestMultiple((int)Math.Round(camera.ScreenToWorldSpace(new Vector2()).X), gridSize); i < AdvancedMath.GetNearestMultiple((int)Math.Round(camera.ScreenToWorldSpace(new Vector2(window.ClientBounds.Width, 0)).X), gridSize) + gridSize; i += gridSize)
+            {
+                int myLineWidth = i / gridSize % 5 == 0 ? i / gridSize % 25 == 0 ? lineWidth * 2 : lineWidth : lineWidth / 2;
+                if ((float)myLineWidth * (float)camera.AccessZoom > 0.9f)
+                {
+                    DrawLine(_spriteBatch, new Vector2((i), (int)Math.Round(camera.ScreenToWorldSpace(new Vector2(0, -10)).Y)), new Vector2((i), (int)Math.Round(camera.ScreenToWorldSpace(new Vector2(0, window.ClientBounds.Height + 10)).Y)), myLineWidth, square, Color.White);
+                    lines++;
+                    vertical++;
+                }
+                else
+                {
+                }
+            }
         }
     }
 }
